@@ -1,12 +1,12 @@
 #ifndef GFX_HELPER_H
 #define GFX_HELPER_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
-#define PI  3.14159265359
+static int maxLength = 0;
 
 // Don't use this standalone
-void gfxDrawCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
+inline void GfxDrawCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
 {
 	SDL_RenderDrawPoint(renderer, cx + x, cy + y);
 	SDL_RenderDrawPoint(renderer, cx - x, cy + y);
@@ -19,7 +19,7 @@ void gfxDrawCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
 }
 
 // Don't use this standalone
-void gfxDrawFilledCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
+inline void GfxDrawFilledCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
 {
 	for (int i = -x; i < x; i++)
 	{
@@ -35,7 +35,14 @@ void gfxDrawFilledCircle(SDL_Renderer* renderer, int cx, int cy, int x, int y)
 }
 
 // Bresenham's Circle Algorithm
-void gfxDrawBrenCircle(SDL_Renderer* renderer, int cx, int cy, int radius, bool filled)
+/* Draws a circle using the Bresenham Circle Algorithm
+	@param SDL_Renderer Render target
+	@param cx X-axis component of the circle's center
+	@param cy Y-axis component of the circle's center
+	@oaram radius Radius of the circle
+	@param filled If the circle should be filled or not
+*/
+inline void GfxDrawBrenCircle(SDL_Renderer* renderer, int cx, int cy, int radius, bool filled)
 {
 	if (radius <= 1)
 	{
@@ -46,9 +53,9 @@ void gfxDrawBrenCircle(SDL_Renderer* renderer, int cx, int cy, int radius, bool 
 	int x = 0, y = radius, d = 3 - (2 * radius);
 
 	if (!filled)
-		gfxDrawCircle(renderer, cx, cy, x, y);
+		GfxDrawCircle(renderer, cx, cy, x, y);
 	else
-		gfxDrawFilledCircle(renderer, cx, cy, x, y);
+		GfxDrawFilledCircle(renderer, cx, cy, x, y);
 
 	while (x <= y)
 	{
@@ -64,22 +71,21 @@ void gfxDrawBrenCircle(SDL_Renderer* renderer, int cx, int cy, int radius, bool 
 
 
 		if (!filled)
-			gfxDrawCircle(renderer, cx, cy, x, y);
+			GfxDrawCircle(renderer, cx, cy, x, y);
 		else
-			gfxDrawFilledCircle(renderer, cx, cy, x, y);
+			GfxDrawFilledCircle(renderer, cx, cy, x, y);
 	}
 }
 
-/* Parameters:
-	SDL_Renderer: Render target
-	cx			: The x-axis component of the point where the line will rotate
-	cy			: The y-axis component of the point where the line will rotate
-	sw			: The screen width
-	sh			: The screen height
-	angle		: The angle that the line is aimed at ( in radians )
+/* Draws an "endless" line to the renderer
+	@param SDL_Renderer Render target
+	@param cx X-axis component of the point where the line will rotate
+	@param cy Y-axis component of the point where the line will rotate
+	@param sw Screen width
+	@param sh Screen height
+	@param angle Angle that the line is aimed at ( in radians )
 */
-static int maxLength = 0;
-void gfxDrawEndlessLine(SDL_Renderer* renderer, int cx, int cy, int sw, int sh, float angle)
+inline void GfxDrawEndlessLine(SDL_Renderer* renderer, int cx, int cy, int sw, int sh, float angle)
 {
 	if (maxLength == 0)
 	{
@@ -93,21 +99,9 @@ void gfxDrawEndlessLine(SDL_Renderer* renderer, int cx, int cy, int sw, int sh, 
 	SDL_RenderDrawLine(renderer, cx + posX, cy + posY, cx - posX, cy - posY);
 }
 
-void gfxDrawHorizontalLine(SDL_Renderer* renderer, int x, int y, int width)
+inline void GfxDrawHorizontalLine(SDL_Renderer* renderer, int x, int y, int width)
 {
 	SDL_RenderDrawLine(renderer, x - width, y, x + width, y);
-}
-
-/* Parameters:
-	SDL_Renderer: Render target
-	cx			: The x-axis component of the square's center
-	cy			: The y-axis component of the square's center
-	width		: The distance from the center to the top, bottom, left, and right mid-points 
-*/
-void gfxDrawSquare(SDL_Renderer* renderer, int cx, int cy, int width)
-{
-	for (int j = -width; j < width; j++)
-		gfxDrawHorizontalLine(renderer, cx, cy + j, width);
 }
 
 #endif
